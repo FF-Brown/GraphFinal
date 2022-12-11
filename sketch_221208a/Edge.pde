@@ -30,7 +30,7 @@ class Edge {
   
  
   void display() {
-    fill(backgroundColor);
+    noFill();
     beginShape();
     curveVertex(startNode.x, startNode.y);
     curveVertex(startNode.x, startNode.y);
