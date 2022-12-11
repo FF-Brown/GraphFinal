@@ -12,7 +12,7 @@ int nodeID = 0;
 int edgeID = 0;
 
 void setup() {
-  size(640, 360);
+  size(960, 540);
   background(backgroundColor);
   nodes = new ArrayList<Node>();
   edges = new ArrayList<Edge>();
