@@ -26,9 +26,7 @@ class Edge {
   void resetHandleLocation() {
     handle = getHandleLocation();
   }
-  
-  
- 
+
   void display() {
     noFill();
     beginShape();
@@ -41,7 +39,12 @@ class Edge {
     ellipse(handle.x, handle.y, handleDiameter, handleDiameter);
   }
  
-  void update() {
+  void update(Node start, Node end) {
+    startNode.x = start.x;
+    startNode.y = start.y;
+    endNode.x = end.x;
+    endNode.y = end.y;
+    resetHandleLocation();
   }
   
   boolean isPointOverHandle(Point point) {

@@ -82,10 +82,7 @@ void draw() {
     findEdgeByID(edges, draggingEdge.id).handle.y = mouseY;
   }
   
-  for (Edge edge : edges) {
-    edge.display();
-  }
-  
+  updateEdges();
   updateNodes();
   
   text("Nodes:", 0, 15);
@@ -107,6 +104,9 @@ void draw() {
   
   if (repelling) {
     repelling = repel();
+    if (!repelling) {
+      println("Finished repelling");  
+    }
   }
   
   // Draw button
@@ -122,6 +122,13 @@ void updateNodes() {
     node.display();
   }
 } //<>//
+
+void updateEdges() {
+  for (Edge edge : edges) {
+    edge.display();
+    edge.update(findNodeByID(nodes,edge.startNode.id),findNodeByID(nodes,edge.endNode.id));
+  }
+}
 
 Edge findEdgeByID(ArrayList<Edge> edgeList, int edgeID) {
   for (Edge edge : edgeList) {
