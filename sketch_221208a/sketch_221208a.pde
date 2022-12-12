@@ -115,6 +115,33 @@ void draw() {
   rect(buttonPos.x, buttonPos.y, buttonSize.width, buttonSize.height);
   fill(255);
   text("Repel", buttonPos.x+5, buttonPos.y+15);
+  
+  boolean drawMatrix = true;
+  if (drawMatrix && nodes != null && nodes.size() > 0) {
+    String m = ""; //<>//
+    for (Node node : nodes) {
+      for (Node other : nodes) {
+        if (areAdjacent(node,other))
+          m = m.concat("1 ");
+        else 
+          m = m.concat("0 ");
+      }
+      m = m.concat("\n");
+    }
+    text(m, buttonPos.x+5, buttonPos.y+45);
+  }
+}
+
+boolean areAdjacent(Node n1, Node n2) {
+  boolean adjacent = false;
+  for (Edge edge : edges) {
+    if ((edge.startNode.id == n1.id && edge.endNode.id == n2.id)
+    || (edge.endNode.id == n1.id && edge.startNode.id == n2.id)) {
+      adjacent = true;
+      break;
+    }
+  }
+  return adjacent;
 }
 
 void updateNodes() {
