@@ -56,7 +56,7 @@ boolean repel() {
         if (dist(target.x, target.y, other.x, other.y) < minDistance) {
           println("Pushing", other.id, "away from", target.id);
           // calculate vector
-          PVector vector = new PVector(1/(other.x-target.x), 1/(other.y-target.y)); //<>//
+          PVector vector = new PVector(2/(other.x-target.x), 2/(other.y-target.y)); //<>//
   
           // repel nodes
           other.applyForce(vector);
