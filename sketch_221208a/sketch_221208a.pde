@@ -1,3 +1,5 @@
+import g4p_controls.*;
+
 int nodeDiameter;
 ArrayList<Node> nodes;
 ArrayList<Edge> edges;
@@ -10,12 +12,29 @@ boolean draggingHandle = false;
 int backgroundColor = 102;
 int nodeID = 0;
 int edgeID = 0;
+PFont f;
+GTextField redField, greenField, blueField;
+Size fieldSize = new Size(50,20);
+Point redFieldPos, greenFieldPos, blueFieldPos;
 
 void setup() {
   size(960, 540);
   background(backgroundColor);
   nodes = new ArrayList<Node>();
   edges = new ArrayList<Edge>();
+  f = createFont("Times New Roman", 18);
+  textFont(f);
+  
+  redFieldPos = new Point(20,70);
+  redField = new GTextField(this, redFieldPos.x, redFieldPos.y, 50, 20);
+  greenFieldPos = new Point(20,100);
+  greenField = new GTextField(this, greenFieldPos.x, greenFieldPos.y, 50, 20);
+  blueFieldPos = new Point(20,130);
+  blueField = new GTextField(this, blueFieldPos.x, blueFieldPos.y, 50, 20);
+  
+  redField.setNumeric(0, 255, 0);
+  greenField.setNumeric(0, 255, 0);
+  blueField.setNumeric(0, 255, 0);
 }
 
 void addNode() {
@@ -24,8 +43,16 @@ void addNode() {
   nodes.add(newNode);
 }
 
-void addEdge() {
-  
+void repel() {
+  float minDistance = 30;
+  for (Node target : nodes) {
+    for (Node other : nodes) {
+      if (dist(target.x, target.y, other.x, other.y) < minDistance) {
+        // calculate vector
+        // repel nodes
+      }
+    }
+  }
 }
 
 void draw() {
@@ -33,18 +60,13 @@ void draw() {
   if (dragging && draggingNode != null) {
     findNodeByID(nodes, draggingNode.id).x = mouseX;
     findNodeByID(nodes, draggingNode.id).y = mouseY;
-    //nodes.get(draggingNode.id).x = mouseX;
-    //nodes.get(draggingNode.id).y = mouseY;
     for (Edge edge : getConnectedEdges(draggingNode)) {
       findEdgeByID(edges, edge.id).resetHandleLocation();
-      //edges.get(edge.id).resetHandleLocation();
     }
   }
   else if (draggingHandle && draggingEdge != null) {
     findEdgeByID(edges, draggingEdge.id).handle.x = mouseX;
     findEdgeByID(edges, draggingEdge.id).handle.y = mouseY;
-    //edges.get(draggingEdge.id).handle.x = mouseX;
-    //edges.get(draggingEdge.id).handle.y = mouseY;
   }
   
   for (Edge edge : edges) {
@@ -55,6 +77,22 @@ void draw() {
     node.display();
   }
   
+  text("Nodes:", 0, 15);
+  text(nodes.size(), 60, 15);
+  text("Edges:", 0, 35);
+  text(edges.size(), 60, 35);
+  text("R:", redFieldPos.x-20, redFieldPos.y+15);
+  text("G:", greenFieldPos.x-20, greenFieldPos.y+15);
+  text("B:", blueFieldPos.x-20, blueFieldPos.y+15);
+  
+  // Update selected node color
+  if (selectedNode != null) {
+    float r = float(redField.getText());
+    float g = float(greenField.getText());
+    float b = float(blueField.getText());
+    
+    selectedNode.fillColor = color(r,g,b);
+  }
 }
 
 Edge findEdgeByID(ArrayList<Edge> edgeList, int edgeID) {
@@ -98,26 +136,47 @@ void mouseClicked() {
 }
 
 void handleLeftClick() {
+  if (isOverTextFields()) {
+    return;
+  }
+  
   Node hoveredNode = getHoveredNode();
   
   if (hoveredNode == null && selectedNode == null) {
-    println("Adding");
+    //println("Adding");
     addNode();
   }
   else {
     if (selectedNode != null && hoveredNode != null) {
-      println("Adding edge");
+      //println("Adding edge");
       drawEdge(selectedNode, hoveredNode);
     }
     if (selectedNode != null) {
-      println("Deselecting");
+      //println("Deselecting");
       deselectNode(selectedNode);
     }
     if (hoveredNode != null) {
-      println("Selecting");
+      //println("Selecting");
       selectNode(hoveredNode);
     }
   }
+}
+
+boolean isOverTextFields() {
+  return isOverRect(new Point(mouseX,mouseY), redFieldPos, fieldSize)
+      || isOverRect(new Point(mouseX,mouseY), greenFieldPos, fieldSize)
+      || isOverRect(new Point(mouseX,mouseY), blueFieldPos, fieldSize);
+}
+
+boolean isOverRect(Point pos, Point rectPos, Size size) {
+  boolean isOver = false;
+  
+  if (pos.x > rectPos.x && pos.x < rectPos.x+size.width
+  && pos.y > rectPos.y && pos.y < rectPos.y+size.height) {
+    isOver = true;
+  }
+  
+  return isOver;
 }
 
 void handleRightClick() {
@@ -155,11 +214,20 @@ void removeEdge(Edge edge) {
 void selectNode(Node node) {
   node.select();
   selectedNode = node;
+  float r = red(selectedNode.fillColor);
+  float g = green(selectedNode.fillColor);
+  float b = blue(selectedNode.fillColor);
+  redField.setText(str(int(r)));
+  greenField.setText(str(int(g)));
+  blueField.setText(str(int(b)));
 }
 
 void deselectNode(Node node) {
   node.deselect();
   selectedNode = null;
+  redField.setText("");
+  greenField.setText("");
+  blueField.setText("");
 }
 
 void drawEdge(Node node1, Node node2) {
@@ -204,24 +272,24 @@ Edge getHoveredHandle() {
 }
 
 void mousePressed() {
-  println("Mouse pressed");
+  //println("Mouse pressed");
   if (mouseButton == LEFT) {
     draggingNode = getHoveredNode();
     draggingEdge = getHoveredHandle();
     
     if (draggingNode != null) {
       dragging = true;
-      println("Started dragging node ", draggingNode.id);
+      //println("Started dragging node ", draggingNode.id);
     }
     else if (draggingEdge != null) {
       draggingHandle = true;
-      println("Started dragging edge handle.");
+      //println("Started dragging edge handle.");
     }
   }
 }
 
 void mouseReleased() {
-  println("Mouse released");
+  //println("Mouse released");
   dragging = false;
   draggingNode = null;
   draggingHandle = false;
