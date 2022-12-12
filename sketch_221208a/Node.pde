@@ -28,8 +28,16 @@ class Node {
   void update() {
     this.x += velocity.x;
     this.y += velocity.y;
-    velocity.x /= 2;
-    velocity.y /= 2;
+    if (this.x-radius < 0)
+      this.x = 0+radius;
+    if (this.y-radius < 0)
+      this.y = 0+radius;
+    if (this.x+radius >= maxX)
+      this.x = maxX-radius;
+    if (this.y+radius >= maxY)
+      this.y = maxY-radius;
+    velocity.x *= 0.75;
+    velocity.y *= 0.75;
   }
   
   void display() {

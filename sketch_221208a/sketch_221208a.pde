@@ -19,6 +19,8 @@ Point redFieldPos, greenFieldPos, blueFieldPos;
 Point buttonPos = new Point(10, 170);
 Size buttonSize = new Size(50, 20);
 boolean repelling = false;
+int maxX = 960;
+int maxY = 540;
 
 void setup() {
   size(960, 540);
