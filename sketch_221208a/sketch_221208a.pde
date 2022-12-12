@@ -4,7 +4,6 @@ int nodeDiameter;
 ArrayList<Node> nodes;
 ArrayList<Edge> edges;
 Node selectedNode;
-DrawingMode mode = DrawingMode.SELECT;
 boolean dragging = false;
 Node draggingNode;
 Edge draggingEdge;
@@ -123,7 +122,7 @@ void updateNodes() {
     node.update();
     node.display();
   }
-} //<>//
+}
 
 void updateEdges() {
   for (Edge edge : edges) {
@@ -335,18 +334,4 @@ void mouseReleased() {
   dragging = false;
   draggingNode = null;
   draggingHandle = false;
-}
-
-void mouseWheel(MouseEvent event) {
-  Node hoveredNode = getHoveredNode();
-  
-  if (hoveredNode != null) {
-    hoveredNode.fillColor += (event.getCount() * -1);
-    if (hoveredNode.fillColor < 0) {
-      hoveredNode.fillColor = 255;
-    }
-    if (hoveredNode.fillColor > 255) {
-      hoveredNode.fillColor = 0;
-    }
-  }
 }
