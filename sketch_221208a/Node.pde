@@ -45,6 +45,7 @@ class Node {
     stroke(strokeColor);
     strokeWeight(strokeWeight);
     ellipse(x, y, diameter, diameter);
+    fill(255);
     text("n"+id, x+radius, y+radius);
   }
   
