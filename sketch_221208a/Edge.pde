@@ -44,7 +44,6 @@ class Edge {
     startNode.y = start.y;
     endNode.x = end.x;
     endNode.y = end.y;
-    resetHandleLocation();
   }
   
   boolean isPointOverHandle(Point point) {

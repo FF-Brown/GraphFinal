@@ -108,6 +108,9 @@ void draw() {
     if (!repelling) {
       println("Finished repelling");  
     }
+    for (Edge edge : edges) {
+      edge.resetHandleLocation();
+    }
   }
   
   // Draw button
