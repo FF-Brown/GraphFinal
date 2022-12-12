@@ -16,6 +16,9 @@ PFont f;
 GTextField redField, greenField, blueField;
 Size fieldSize = new Size(50,20);
 Point redFieldPos, greenFieldPos, blueFieldPos;
+Point buttonPos = new Point(10, 170);
+Size buttonSize = new Size(50, 20);
+boolean repelling = false;
 
 void setup() {
   size(960, 540);
@@ -43,29 +46,39 @@ void addNode() {
   nodes.add(newNode);
 }
 
-void repel() {
-  float minDistance = 30;
+boolean repel() {
+  float minDistance = 100;
+  boolean stillWorking = false; //<>//
   for (Node target : nodes) {
     for (Node other : nodes) {
-      if (dist(target.x, target.y, other.x, other.y) < minDistance) {
-        // calculate vector
-        // repel nodes
+      if (target.id != other.id) {
+        if (dist(target.x, target.y, other.x, other.y) < minDistance) {
+          println("Pushing", other.id, "away from", target.id);
+          // calculate vector
+          PVector vector = new PVector(1/(other.x-target.x), 1/(other.y-target.y)); //<>//
+  
+          // repel nodes
+          other.applyForce(vector);
+          
+          stillWorking = true;
+        }
       }
     }
   }
+  return stillWorking;
 }
 
 void draw() {
   background(102);
   if (dragging && draggingNode != null) {
-    findNodeByID(nodes, draggingNode.id).x = mouseX;
+    findNodeByID(nodes, draggingNode.id).x = mouseX; //<>//
     findNodeByID(nodes, draggingNode.id).y = mouseY;
     for (Edge edge : getConnectedEdges(draggingNode)) {
       findEdgeByID(edges, edge.id).resetHandleLocation();
     }
   }
   else if (draggingHandle && draggingEdge != null) {
-    findEdgeByID(edges, draggingEdge.id).handle.x = mouseX;
+    findEdgeByID(edges, draggingEdge.id).handle.x = mouseX; //<>//
     findEdgeByID(edges, draggingEdge.id).handle.y = mouseY;
   }
   
@@ -73,9 +86,7 @@ void draw() {
     edge.display();
   }
   
-  for (Node node : nodes) {
-    node.display();
-  }
+  updateNodes();
   
   text("Nodes:", 0, 15);
   text(nodes.size(), 60, 15);
@@ -93,7 +104,24 @@ void draw() {
     
     selectedNode.fillColor = color(r,g,b);
   }
+  
+  if (repelling) {
+    repelling = repel();
+  }
+  
+  // Draw button
+  fill(0);
+  rect(buttonPos.x, buttonPos.y, buttonSize.width, buttonSize.height);
+  fill(255);
+  text("Repel", buttonPos.x+5, buttonPos.y+15);
 }
+
+void updateNodes() {
+  for (Node node : nodes) {
+    node.update();
+    node.display();
+  }
+} //<>//
 
 Edge findEdgeByID(ArrayList<Edge> edgeList, int edgeID) {
   for (Edge edge : edgeList) {
@@ -137,6 +165,11 @@ void mouseClicked() {
 
 void handleLeftClick() {
   if (isOverTextFields()) {
+    return;
+  }
+  
+  if (isOverRect(new Point(mouseX,mouseY), buttonPos, buttonSize)) {
+    repelling = true;
     return;
   }
   

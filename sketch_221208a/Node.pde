@@ -10,6 +10,8 @@ class Node {
   int strokeColor;
   boolean selected = false;
   int id;
+  PVector velocity = new PVector(0,0);
+  
   
   Node(int idNumber, float posX, float posY) {
     id = idNumber;
@@ -17,6 +19,17 @@ class Node {
     y = posY;
     fillColor = defaultColor;
     strokeColor = defaultStrokeColor;
+  }
+  
+  void applyForce(PVector vector) {
+    velocity.add(vector);
+  }
+  
+  void update() {
+    this.x += velocity.x;
+    this.y += velocity.y;
+    velocity.x /= 2;
+    velocity.y /= 2;
   }
   
   void display() {
@@ -47,9 +60,4 @@ class Node {
     strokeColor = defaultStrokeColor;
     selected = false;
   }
-  
-  void update() {
-   
-  }
-
 }
